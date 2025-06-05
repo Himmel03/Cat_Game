@@ -191,37 +191,35 @@ int main(void) {
 
 
         // ------------------------------------------------------ 이동 ------------------------------------------------------ //
-        printf("'%s' 이동 : 집사와 친할수록 냄비 쪽으로 갈 확률이 높아집니다!\n", cat_name);
-        printf("주사위 눈이 %d 이상이면 냄비 쪽으로 이동합니다.\n", 6 - relationship);
-        Sleep(1000);                                                                        // 추가 (빠른 출력 방지)
-
-        dice = rand() % 6 + 1;                                                              // 1~6사이의 난수 생성
-
-        printf("주사위를 굴립니다. 또르륵...\n");
-        Sleep(1000);                                                                        // 추가 (주사위 기다리는 느낌)
-        printf("%d이(가) 나왔습니다!\n", dice);
-        Sleep(1000);                                                                        // 추가 (빠른 출력 방지)
-
         previous_location = cat_left + 1;                                                   // 현재 위치 기억 = 이전 위치
 
-        if (dice >= 6 - relationship) {                                                     // 주사위 값 >= (6-친밀도)
-            printf("냄비 쪽으로 이동합니다.\n");
-            if (cat_left < ROOM_WIDTH - 3) {                                                // 냄비쪽으로 한 칸 이동
-                cat_left++;
-            }
-            else {                                                                          // 현재 위치 = 7 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
-                printf("벽에 막혀 이동하지 않습니다.\n");
-            }
-        }
-        else {                                                                              // 주사위 값 < (6-친밀도)
-            printf("집 쪽으로 이동합니다.\n");
+        switch (feeling) {
+
+        case 0: printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", cat_name);
             if (cat_left > 0) {                                                             // 집쪽으로 한 칸 이동
                 cat_left--;
             }
             else {                                                                          // 현재 위치 = 0 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("벽에 막혀 이동하지 않습니다.\n");                                   // 이동하려는 방향이 벽에 막히면 그 자리에 앉음
             }
+            break;
+
+        case 1: printf("%s은(는) 심심해서 스크래처 쪽으로 이동합니다.\n", cat_name);
+            break;
+
+        case 2: printf("%s은(는) 기분좋게 식빵을 굽고 있습니다.\n", cat_name);
+            break;
+
+        case 3: printf("%s은(는) 골골송을 부르며 수프를 만들러 갑니다.\n", cat_name);
+            if (cat_left < ROOM_WIDTH - 3) {                                                // 냄비쪽으로 한 칸 이동
+                cat_left++;
+            }
+            else {                                                                          // 현재 위치 = 7 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
+                printf("벽에 막혀 이동하지 않습니다.\n");
+            }
+            break;
         }
+
         Sleep(1000);
 
         // 결과 출력
