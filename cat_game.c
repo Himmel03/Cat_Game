@@ -6,10 +6,13 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define ROOM_WIDTH 10                       // 방 너비
 #define HME_POS 1                           // 집 위치
 #define BWL_POS (ROOM_WIDTH - 2)            // 냄비 위치
+#define SCRATCHER_POS -1                    // 스크래처 위치
+#define CAT_TOWER_POS -1                    // 캣타워 위치
 
 int main(void) {
 
@@ -24,7 +27,11 @@ int main(void) {
     int random, action;                     // 랜덤값 받는 변수(수프 종류 선택할 때 사용), 행동 입력 받는 변수(0 또는 1)
     char cat_name[16];                      // 야옹이 이름
     int CP = 0;                             // 자원(CP)
-    int feeling = 3;                        // 기분(0~3)  
+    int feeling = 3;                        // 기분(0~3)
+    bool scratcher = false;                 // 스크래쳐 유무
+    bool cat_tower = false;                 // 캣타워 유무
+    bool toy_mouse = false;                 // 장난감 쥐 유무
+    bool toy_laser = false;                 // 장난감 레이저 유무
 
 
     // ------------------------------------------------------ 인트로 ------------------------------------------------------ //
@@ -113,6 +120,12 @@ int main(void) {
             else if (i == BWL_POS) {
                 printf("B");
             }
+            else if (i == SCRATCHER_POS) {
+                printf("S");
+            }
+            else if (i == CAT_TOWER_POS) {
+                printf("T");
+            }
             else {
                 printf(" ");
             }
@@ -145,11 +158,40 @@ int main(void) {
 
         // ------------------------------------------------------ 상호 작용 ------------------------------------------------------ //
         action = -1;
+
         printf("어떤 상호작용을 하시겠습니까?\n0 : 아무것도 하지 않음\n1 : 긁어 주기\n");
-        while (action != 0 && action != 1) {                                                 // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
-            printf(">> ");
-            scanf_s("%d", &action);
+        if (toy_mouse == true) {
+            printf("2 : 장난감 쥐로 놀아 주기\n");
+            if (toy_laser == true) {
+                printf("3 : 레이저 포인터로 놀아 주기\n");
+            }
         }
+        else if (toy_laser == true) {
+            printf("2 : 레이저 포인터로 놀아 주기\n");
+            if (toy_mouse == true) {
+                printf("3 : 장난감 쥐로 놀아 주기\n");
+            }
+        }
+
+        if (toy_mouse == true || toy_laser == true) {                                        // 0~3까지 선택지
+            while (action != 0 && action != 1 && action != 2) {                              // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
+                printf(">> ");
+                scanf_s("%d", &action);
+            }
+        }
+        else if (toy_mouse == true && toy_laser == true) {                                   // 0~2까지 선택지
+            while (action != 0 && action != 1 && action != 2 && action != 3) {               // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
+                printf(">> ");
+                scanf_s("%d", &action);
+            }
+        }
+        else {                                                                               // 0~1까지 선택지
+            while (action != 0 && action != 1) {                                             // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
+                printf(">> ");
+                scanf_s("%d", &action);
+            }
+        }
+
 
         dice = rand() % 6 + 1;                                                               // 1~6사이의 난수 생성
 
@@ -195,7 +237,8 @@ int main(void) {
 
         switch (feeling) {
 
-        case 0: printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", cat_name);
+        case 0:
+            printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", cat_name);
             if (cat_left > 0) {                                                             // 집쪽으로 한 칸 이동
                 cat_left--;
             }
@@ -206,13 +249,39 @@ int main(void) {
             }
             break;
 
-        case 1: printf("%s은(는) 심심해서 스크래처 쪽으로 이동합니다.\n", cat_name);
+        case 1:
+            if (scratcher == true || cat_tower == true) {
+                if (abs((cat_left + 2) - SCRATCHER_POS) < abs((cat_left + 2) - CAT_TOWER_POS)) {        // 야옹이 위치에서 각 놀이기구까지의 거리를 구해 가까운 놀이기구로 이동하도록 함
+                    printf("%s은(는) 심심해서 스크래처 쪽으로 이동합니다.\n", cat_name);
+                    if (((cat_left + 2) - SCRATCHER_POS) > 0) {                                         // 야옹이보다 왼쪽에 있으면
+                        cat_left--;                                                                     // 야옹이 왼쪽으로 이동
+                    }
+                    else {                                                                              // 야옹이보다 오른쪽에 있으면
+                        cat_left++;                                                                     // 야옹이 오른쪽으로 이동
+                    }
+                }
+                else {
+                    printf("%s은(는) 심심해서 캣타워 쪽으로 이동합니다.\n", cat_name);
+                    if (((cat_left + 2) - CAT_TOWER_POS) > 0) {                                         // 야옹이보다 왼쪽에 있으면
+                        cat_left--;                                                                     // 야옹이 왼쪽으로 이동
+                    }
+                    else {                                                                              // 야옹이보다 오른쪽에 있으면
+                        cat_left++;                                                                     // 야옹이 오른쪽으로 이동
+                    }
+                }
+            }
+            else {
+                printf("놀 거리가 없어서 기분이 매우 나빠집니다.\n");
+                feeling--;
+            }
             break;
 
-        case 2: printf("%s은(는) 기분좋게 식빵을 굽고 있습니다.\n", cat_name);
+        case 2: 
+            printf("%s은(는) 기분좋게 식빵을 굽고 있습니다.\n", cat_name);
             break;
 
-        case 3: printf("%s은(는) 골골송을 부르며 수프를 만들러 갑니다.\n", cat_name);
+        case 3: 
+            printf("%s은(는) 골골송을 부르며 수프를 만들러 갑니다.\n", cat_name);
             if (cat_left < ROOM_WIDTH - 3) {                                                // 냄비쪽으로 한 칸 이동
                 cat_left++;
             }
@@ -242,17 +311,17 @@ int main(void) {
             }
             printf("현재까지 만든 수프 : %d개\n\n", soup);
         }
-        else () {                                                                           // 스크래처
+        else if (cat_left + 1 == SCRATCHER_POS) {                                           // 스크래처에 위치
             printf("%s은(는) 스크래처를 긁고 놀았습니다.\n", cat_name);
             printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling + 1);
-            feeling += 1;
+            feeling += 1;                                                                   // 기분 +1
         }
-        else () {                                                                           // 캣타워
+        else if (cat_left + 1 == CAT_TOWER_POS) {                                           // 캣타워에 위치
             printf("%s은(는) 캣타워를 뛰어다닙니다.\n", cat_name);
             printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling + 2);
-            feeling += 2;
+            feeling += 2;                                                                   // 기분 +2
         }
-        else if (cat_left + 1 == HME_POS) {                                                 // 집에 들어가 있으면 이벤트 없음
+        else if (cat_left + 1 == HME_POS) {                                                 // 집에 위치
             printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n", cat_name);
         }
 
