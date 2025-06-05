@@ -20,7 +20,7 @@ int main(void) {
 
     // ------------------------------------------------------ 변수 설정 ------------------------------------------------------ //
     int soup = 0;                           // 수프 개수
-    int relationship = 2;                   // 친밀도
+    int relationship = 2;                   // 친밀도 (0~4)
     int cat_left = 0;                       // 야옹이의 현재 위치 (출력 기준으로 왼쪽 공백 수)
     int previous_location = -1;             // 이전 위치 표시용 (없으면 -1)
     int dice;                               // 주사위 값
@@ -32,6 +32,7 @@ int main(void) {
     bool cat_tower = false;                 // 캣타워 유무
     bool toy_mouse = false;                 // 장난감 쥐 유무
     bool toy_laser = false;                 // 장난감 레이저 유무
+    int produce_CP = 0;                     // 생산한 CP값
 
 
     // ------------------------------------------------------ 인트로 ------------------------------------------------------ //
@@ -60,6 +61,14 @@ int main(void) {
     // ------------------------------------------------------ 상태 출력 ------------------------------------------------------ //
     while (1) {
 
+        // CP포인트
+        if (feeling - 1 == 0) {
+            produce_CP = relationship;
+        }
+        else {
+            produce_CP = (feeling - 1) + relationship;
+        }
+
         // 상태 출력
         printf("============================== 현재 상태 ==============================\n");
         printf("현재까지 만든 수프 : %d개\n", soup);
@@ -80,6 +89,9 @@ int main(void) {
         case 3: printf("\t훌륭한 집사로 인정 받고 있습니다!         = OㅅO =\n"); break;
         case 4: printf("\t집사 껌딱지입니다!                        = >ㅅ< =\n"); break;
         }
+        printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n", cat_name, produce_CP);
+        CP += produce_CP;
+        printf("보유 CP : %d 포인트\n", CP);
         printf("=======================================================================\n\n");
 
         Sleep(500);                                                                          // 각 단계 사이에 잠시 멈추기
@@ -94,8 +106,15 @@ int main(void) {
         printf("%d이(가) 나왔습니다.\n", dice);
 
         if (dice <= 4) {
-            printf("%s의 기분이 나빠집니다 : %d -> %d\n\n", cat_name, feeling, feeling - 1);
-            feeling--;
+            if (feeling != 0) {
+                printf("%s의 기분이 나빠집니다 : %d -> %d\n\n", cat_name, feeling, feeling - 1);
+                feeling--;
+            }
+            else {
+                printf("%s의 기분이 나빠집니다 : % d -> % d\n\n", cat_name, feeling, feeling);
+            }
+
+
         }
         else {
             printf("%s의 기분이 그대로입니다 : %d\n\n", cat_name, feeling);
@@ -192,12 +211,13 @@ int main(void) {
             }
         }
 
-
         dice = rand() % 6 + 1;                                                               // 1~6사이의 난수 생성
 
         if (action == 0) {                                                                   // 0 : 아무것도 하지 않기
             printf("\n아무것도 하지 않았습니다. %s의 기분이 나빠졌습니다.\n", cat_name);
-            feeling--;
+            if (feeling != 0) {
+                feeling--;
+            }
             printf("주사위 눈이 5 이하면 친밀도가 떨어집니다.\n주사위를 굴립니다. 또르륵...\n");
             Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
             printf("%d이(가) 나왔습니다!\n", dice);
@@ -227,8 +247,13 @@ int main(void) {
             }
         }
         else if (action == 2) {
-            printf("장난감 쥐로 %s와 놀아 주었습니다. %s의 기분이 조금 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 1);
-            feeling++;
+            if (feeling != 3) {
+                printf("장난감 쥐로 %s와 놀아 주었습니다. %s의 기분이 조금 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 1);
+                feeling++;
+            }
+            else {
+                printf("장난감 쥐로 %s와 놀아 주었습니다. %s의 기분이 조금 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling);
+            }
             printf("주사위 눈이 4 이상이면 친밀도가 증가합니다.\n주사위를 굴립니다. 또르륵...\n");
             Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
             printf("%d이(가) 나왔습니다!\n", dice);
@@ -243,8 +268,13 @@ int main(void) {
             }
         }
         else {
-            printf("레이저 포인터로 %s와 신나게 놀아 주었습니다. %s의 기분이 꽤 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 2);
-            feeling+=2;
+            if (feeling != 3) {
+                printf("레이저 포인터로 %s와 신나게 놀아 주었습니다. %s의 기분이 꽤 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 2);
+                feeling+=2;
+            }
+            else {
+                printf("레이저 포인터로 %s와 신나게 놀아 주었습니다. %s의 기분이 꽤 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling);
+            }
             printf("주사위 눈이 2 이상이면 친밀도가 증가합니다.\n주사위를 굴립니다. 또르륵...\n");
             Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
             printf("%d이(가) 나왔습니다!\n", dice);
@@ -279,7 +309,9 @@ int main(void) {
             else {                                                                          // 현재 위치 = 0 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("벽에 막혀 이동하지 않습니다.\n");                                   // 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("기분 +1\n");                                                        // 집에서 한 턴을 쉴 떄마다 기분 +1
-                feeling++;
+                if (feeling != 3) {
+                    feeling++;
+                }
             }
             break;
 
@@ -306,7 +338,9 @@ int main(void) {
             }
             else {
                 printf("놀 거리가 없어서 기분이 매우 나빠집니다.\n");
-                feeling--;
+                if (feeling != 0) {
+                    feeling--;
+                }
             }
             break;
 
@@ -324,6 +358,8 @@ int main(void) {
             }
             break;
         }
+
+        printf("\n");
 
         Sleep(500);                                                                         // 각 단계 사이에 잠시 멈추기
 
@@ -347,13 +383,26 @@ int main(void) {
         }
         else if (cat_left + 1 == SCRATCHER_POS) {                                           // 스크래처에 위치
             printf("%s은(는) 스크래처를 긁고 놀았습니다.\n", cat_name);
-            printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling + 1);
-            feeling += 1;                                                                   // 기분 +1
+            if (feeling != 3) {
+                printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling + 1);
+                feeling++;
+            }
+            else {
+                printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling);
+            }
+            
+            
+            
         }
         else if (cat_left + 1 == CAT_TOWER_POS) {                                           // 캣타워에 위치
             printf("%s은(는) 캣타워를 뛰어다닙니다.\n", cat_name);
-            printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling + 2);
-            feeling += 2;                                                                   // 기분 +2
+            if (feeling != 3) {
+                printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling + 2);
+                feeling+=2;
+            }
+            else {
+                printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling);
+            }
         }
         else if (cat_left + 1 == HME_POS) {                                                 // 집에 위치
             printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n", cat_name);
