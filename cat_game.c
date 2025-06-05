@@ -11,8 +11,6 @@
 #define ROOM_WIDTH 15                       // 방 너비
 #define HME_POS 1                           // 집 위치
 #define BWL_POS (ROOM_WIDTH - 2)            // 냄비 위치
-#define SCRATCHER_POS -1                    // 스크래처 위치
-#define CAT_TOWER_POS -1                    // 캣타워 위치
 
 int main(void) {
 
@@ -33,6 +31,9 @@ int main(void) {
     bool toy_mouse = false;                 // 장난감 쥐 유무
     bool toy_laser = false;                 // 장난감 레이저 유무
     int produce_CP = 0;                     // 생산한 CP값
+    int choice;                             // 상점 선택값
+    int SCRATCHER_POS = -1;                 // 스크래처 위치
+    int CAT_TOWER_POS = -1;                 // 캣타워 위치
 
 
     // ------------------------------------------------------ 인트로 ------------------------------------------------------ //
@@ -405,7 +406,112 @@ int main(void) {
             }
         }
         else if (cat_left + 1 == HME_POS) {                                                 // 집에 위치
-            printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n", cat_name);
+            printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n\n", cat_name);
+        }
+
+        Sleep(500);
+
+
+        // ------------------------------------------------------ 상점 ------------------------------------------------------ //
+        printf("상점에서 물건을 살 수 있습니다.\n");
+        printf("어떤 물건을 구매할까요?\n");
+        printf("\t0. 아무 것도 사지 않는다.\n");
+        printf("\t1. 장난감 쥐 : 1 CP");
+        if (toy_mouse == true) {
+            printf("(품절)\n");
+        }
+        else {
+            printf("\n");
+        }
+        printf("\t2. 레이저 포인터 : 2 CP");
+        if (toy_laser == true) {
+            printf("(품절)\n");
+        }
+        else {
+            printf("\n");
+        }
+        printf("\t3. 스크래처 : 4 CP");
+        if (scratcher == true) {
+            printf("(품절)\n");
+        }
+        else {
+            printf("\n");
+        }
+        printf("\t4. 캣 타워 : 6 CP");
+        if (cat_tower == true) {
+            printf("(품절)\n");
+        }
+        else {
+            printf("\n");
+        }
+        printf(">>");
+        scanf_s("%d", &choice);
+
+        if (choice == 1) {
+            if (toy_mouse == true) {
+                printf("장난감 쥐를 이미 구매했습니다.\n");
+            }
+            else {
+                if (CP < 1) {
+                    printf("CP가 부족합니다.");
+                }
+                else {
+                    CP -= 1;
+                    printf("장난감쥐를 구매했습니다.\n보유 CP %d 포인트\n", CP);
+                    toy_mouse = true;
+                }
+            }
+        }
+        else if (choice = 2) {
+            if (toy_laser == true) {
+                printf("레이저 포인터를 이미 구매했습니다.\n");
+            }
+            else {
+                if (CP < 2) {
+                    printf("CP가 부족합니다.");
+                }
+                else {
+                    CP -= 2;
+                    printf("레이저 포인터를 구매했습니다.\n보유 CP %d 포인트\n", CP);
+                    toy_laser = true;
+                }
+            }
+        }
+        else if (choice == 3) {
+            if (scratcher == true) {
+                printf("스크래처를 이미 구매했습니다.\n");
+            }
+            else {
+                if (CP < 4) {
+                    printf("CP가 부족합니다.");
+                }
+                else {
+                    CP -= 4;
+                    printf("스크래처를 구매했습니다.\n보유 CP %d 포인트\n", CP);
+                    scratcher = true;
+                    while (SCRATCHER_POS == CAT_TOWER_POS) {
+                        SCRATCHER_POS = rand() % (ROOM_WIDTH - 3) + 2;                            // 2 ~ ROOM_WIDTH - 3까지
+                    }
+                }
+            }
+        }
+        else {
+            if (cat_tower == true) {
+                printf("캣타워를 이미 구매했습니다.\n");
+            }
+            else {
+                if (CP < 6) {
+                    printf("CP가 부족합니다.");
+                }
+                else {
+                    CP -= 6;
+                    printf("캣타워를 구매했습니다.\n보유 CP %d 포인트\n", CP);
+                    cat_tower = true;
+                    while (CAT_TOWER_POS == SCRATCHER_POS) {
+                        CAT_TOWER_POS = rand() % (ROOM_WIDTH - 3) + 2;                            // 2 ~ ROOM_WIDTH - 3까지
+                    }
+                }
+            }
         }
 
         Sleep(2500);                                                                        // 2.5초 대기
