@@ -8,7 +8,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define ROOM_WIDTH 10                       // 방 너비
+#define ROOM_WIDTH 15                       // 방 너비
 #define HME_POS 1                           // 집 위치
 #define BWL_POS (ROOM_WIDTH - 2)            // 냄비 위치
 #define SCRATCHER_POS -1                    // 스크래처 위치
@@ -196,13 +196,14 @@ int main(void) {
         dice = rand() % 6 + 1;                                                               // 1~6사이의 난수 생성
 
         if (action == 0) {                                                                   // 0 : 아무것도 하지 않기
-            printf("\n아무것도 하지 않았습니다.\n");
-            printf("4/6의 확률로 친밀도가 떨어집니다.\n주사위를 굴립니다. 또르륵...\n");
+            printf("\n아무것도 하지 않았습니다. %s의 기분이 나빠졌습니다.\n", cat_name);
+            feeling--;
+            printf("주사위 눈이 5 이하면 친밀도가 떨어집니다.\n주사위를 굴립니다. 또르륵...\n");
             Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
             printf("%d이(가) 나왔습니다!\n", dice);
             Sleep(1000);                                                                     // 추가 (빠른 출력 방지)
 
-            if (dice <= 4 && relationship > 0) {                                             // 주사위 눈이 4 이하면 친밀도 하락
+            if (dice <= 5 && relationship > 0) {                                             // 주사위 눈이 5 이하면 친밀도 하락
                 relationship--;
                 printf("친밀도가 떨어졌습니다.\n");
             }
@@ -210,21 +211,54 @@ int main(void) {
                 printf("다행히 친밀도는 그대로입니다.\n");
             }
         }
-        else {                                                                               // 1 : 긁어주기
-            printf("\n'%s'의 턱을 긁어주었습니다!\n", cat_name);
-            printf("2/6의 확률로 친밀도가 높아집니다.\n주사위를 굴립니다. 또르륵...\n");
+        else if (action == 1) {                                                              // 1 : 긁어주기
+            printf("\n'%s'의 턱을 긁어주었습니다! %s의 기분은 그대로 입니다.\n", cat_name, cat_name);
+            printf("주사위 눈이 5 이상이면 친밀도가 증가합니다.\n주사위를 굴립니다. 또르륵...\n");
             Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
             printf("%d이(가) 나왔습니다!\n", dice);
             Sleep(1000);                                                                     // 추가 (빠른 출력 방지)
 
             if (dice >= 5 && relationship < 4) {                                             // 주사위 눈이 5 이상이면 친밀도 상승
                 relationship++;
-                printf("친밀도가 올라갔습니다.\n");
+                printf("친밀도가 1 올라갔습니다.\n");
             }
             else {                                                                           // 친밀도는 4보다 큰 값으로 올라가지는 않음
                 printf("친밀도는 그대로입니다.\n");
             }
         }
+        else if (action == 2) {
+            printf("장난감 쥐로 %s와 놀아 주었습니다. %s의 기분이 조금 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 1);
+            feeling++;
+            printf("주사위 눈이 4 이상이면 친밀도가 증가합니다.\n주사위를 굴립니다. 또르륵...\n");
+            Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
+            printf("%d이(가) 나왔습니다!\n", dice);
+            Sleep(1000);                                                                     // 추가 (빠른 출력 방지)
+
+            if (dice >= 4 && relationship < 4) {                                             // 주사위 눈이 4 이상이면 친밀도 상승
+                relationship++;
+                printf("친밀도가 1 올라갔습니다.\n");
+            }
+            else {                                                                           // 친밀도는 4보다 큰 값으로 올라가지는 않음
+                printf("친밀도는 그대로입니다.\n");
+            }
+        }
+        else {
+            printf("레이저 포인터로 %s와 신나게 놀아 주었습니다. %s의 기분이 꽤 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 2);
+            feeling+=2;
+            printf("주사위 눈이 2 이상이면 친밀도가 증가합니다.\n주사위를 굴립니다. 또르륵...\n");
+            Sleep(1000);                                                                     // 추가 (주사위 기다리는 느낌)
+            printf("%d이(가) 나왔습니다!\n", dice);
+            Sleep(1000);                                                                     // 추가 (빠른 출력 방지)
+
+            if (dice >= 2 && relationship < 4) {                                             // 주사위 눈이 2 이상이면 친밀도 상승
+                relationship++;
+                printf("친밀도가 1 올라갔습니다.\n");
+            }
+            else {                                                                           // 친밀도는 4보다 큰 값으로 올라가지는 않음
+                printf("친밀도는 그대로입니다.\n");
+            }
+        }
+
         Sleep(1000);                                                                         // 추가 (빠른 출력 방지)
 
         printf("현재 친밀도 : %d\n\n", relationship);                                        // 친밀도 출력
