@@ -201,6 +201,8 @@ int main(void) {
             }
             else {                                                                          // 현재 위치 = 0 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("벽에 막혀 이동하지 않습니다.\n");                                   // 이동하려는 방향이 벽에 막히면 그 자리에 앉음
+                printf("기분 +1\n");                                                        // 집에서 한 턴을 쉴 떄마다 기분 +1
+                feeling++;
             }
             break;
 
@@ -220,9 +222,11 @@ int main(void) {
             break;
         }
 
-        Sleep(1000);
+        Sleep(500);                                                                         // 각 단계 사이에 잠시 멈추기
 
-        // 결과 출력
+
+        // ------------------------------------------------------ 행동 ------------------------------------------------------ //
+
         if (cat_left + 1 == BWL_POS) {                                                      // 야옹이가 냄비와 같은 열에 있으면 수프 1개 만듦
             soup++;
             random = rand() % 3 + 1;                                                        // 만드는 수프는 감자, 양송이, 브로콜리 수프 중 무작위로 출력
@@ -238,8 +242,18 @@ int main(void) {
             }
             printf("현재까지 만든 수프 : %d개\n\n", soup);
         }
-        else if (cat_left + 1 == HME_POS) {                                                 // 집에 들어가 있으면 아무 이벤트 없음
-            printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n\n", cat_name);
+        else () {                                                                           // 스크래처
+            printf("%s은(는) 스크래처를 긁고 놀았습니다.\n", cat_name);
+            printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling + 1);
+            feeling += 1;
+        }
+        else () {                                                                           // 캣타워
+            printf("%s은(는) 캣타워를 뛰어다닙니다.\n", cat_name);
+            printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling + 2);
+            feeling += 2;
+        }
+        else if (cat_left + 1 == HME_POS) {                                                 // 집에 들어가 있으면 이벤트 없음
+            printf("\n'%s'은(는) 자신의 집에서 편안함을 느낍니다..\n", cat_name);
         }
 
         Sleep(2500);                                                                        // 2.5초 대기
