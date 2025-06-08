@@ -106,8 +106,8 @@ int main(void) {
         dice = rand() % 6 + 1;                                                               // 1~6사이의 난수 생성
         printf("%d이(가) 나왔습니다.\n", dice);
 
-        if (dice <= 4) {
-            if (feeling != 0) {
+        if (dice <= (6 - relationship)) {
+            if (feeling > 0) {
                 printf("%s의 기분이 나빠집니다 : %d -> %d\n\n", cat_name, feeling, feeling - 1);
                 feeling--;
             }
@@ -193,14 +193,14 @@ int main(void) {
             }
         }
 
-        if (toy_mouse == true || toy_laser == true) {                                        // 0~3까지 선택지
-            while (action != 0 && action != 1 && action != 2) {                              // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
+        if (toy_mouse == true && toy_laser == true) {                                        // 0~2까지 선택지
+            while (action != 0 && action != 1 && action != 2 && action != 3) {               // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
                 printf(">> ");
                 scanf_s("%d", &action);
             }
         }
-        else if (toy_mouse == true && toy_laser == true) {                                   // 0~2까지 선택지
-            while (action != 0 && action != 1 && action != 2 && action != 3) {               // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
+        else if (toy_mouse == true || toy_laser == true) {                                   // 0~3까지 선택지
+            while (action != 0 && action != 1 && action != 2) {                              // 상호작용에서 범위 외의 값이 입력 되면 다시 입력 받기
                 printf(">> ");
                 scanf_s("%d", &action);
             }
@@ -216,7 +216,7 @@ int main(void) {
 
         if (action == 0) {                                                                   // 0 : 아무것도 하지 않기
             printf("\n아무것도 하지 않았습니다. %s의 기분이 나빠졌습니다.\n", cat_name);
-            if (feeling != 0) {
+            if (feeling > 0) {
                 feeling--;
             }
             printf("주사위 눈이 5 이하면 친밀도가 떨어집니다.\n주사위를 굴립니다. 또르륵...\n");
@@ -248,7 +248,7 @@ int main(void) {
             }
         }
         else if (action == 2) {
-            if (feeling != 3) {
+            if (feeling < 3) {
                 printf("장난감 쥐로 %s와 놀아 주었습니다. %s의 기분이 조금 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 1);
                 feeling++;
             }
@@ -269,7 +269,7 @@ int main(void) {
             }
         }
         else {
-            if (feeling != 3) {
+            if (feeling < 3) {
                 printf("레이저 포인터로 %s와 신나게 놀아 주었습니다. %s의 기분이 꽤 좋아졌습니다 : %d -> %d\n", cat_name, cat_name, feeling, feeling + 2);
                 feeling+=2;
             }
@@ -310,7 +310,7 @@ int main(void) {
             else {                                                                          // 현재 위치 = 0 : 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("벽에 막혀 이동하지 않습니다.\n");                                   // 이동하려는 방향이 벽에 막히면 그 자리에 앉음
                 printf("기분 +1\n");                                                        // 집에서 한 턴을 쉴 떄마다 기분 +1
-                if (feeling != 3) {
+                if (feeling < 3) {
                     feeling++;
                 }
             }
@@ -339,7 +339,7 @@ int main(void) {
             }
             else {
                 printf("놀 거리가 없어서 기분이 매우 나빠집니다.\n");
-                if (feeling != 0) {
+                if (feeling > 0) {
                     feeling--;
                 }
             }
@@ -384,7 +384,7 @@ int main(void) {
         }
         else if (cat_left + 1 == SCRATCHER_POS) {                                           // 스크래처에 위치
             printf("%s은(는) 스크래처를 긁고 놀았습니다.\n", cat_name);
-            if (feeling != 3) {
+            if (feeling < 3) {
                 printf("기분이 조금 좋아졌습니다 : %d -> %d\n", feeling, feeling + 1);
                 feeling++;
             }
@@ -397,7 +397,7 @@ int main(void) {
         }
         else if (cat_left + 1 == CAT_TOWER_POS) {                                           // 캣타워에 위치
             printf("%s은(는) 캣타워를 뛰어다닙니다.\n", cat_name);
-            if (feeling != 3) {
+            if (feeling < 3) {
                 printf("기분이 조금 제법 좋아졌습니다 : %d -> %d\n", feeling, feeling + 2);
                 feeling+=2;
             }
@@ -462,7 +462,7 @@ int main(void) {
                 }
             }
         }
-        else if (choice = 2) {
+        else if (choice == 2) {
             if (toy_laser == true) {
                 printf("레이저 포인터를 이미 구매했습니다.\n");
             }
@@ -489,13 +489,13 @@ int main(void) {
                     CP -= 4;
                     printf("스크래처를 구매했습니다.\n보유 CP %d 포인트\n", CP);
                     scratcher = true;
-                    while (SCRATCHER_POS == CAT_TOWER_POS) {
+                    do {
                         SCRATCHER_POS = rand() % (ROOM_WIDTH - 3) + 2;                            // 2 ~ ROOM_WIDTH - 3까지
-                    }
+                    } while (SCRATCHER_POS == CAT_TOWER_POS);
                 }
             }
         }
-        else {
+        else if (choice == 4) {
             if (cat_tower == true) {
                 printf("캣타워를 이미 구매했습니다.\n");
             }
@@ -507,11 +507,14 @@ int main(void) {
                     CP -= 6;
                     printf("캣타워를 구매했습니다.\n보유 CP %d 포인트\n", CP);
                     cat_tower = true;
-                    while (CAT_TOWER_POS == SCRATCHER_POS) {
+                    do {
                         CAT_TOWER_POS = rand() % (ROOM_WIDTH - 3) + 2;                            // 2 ~ ROOM_WIDTH - 3까지
-                    }
+                    } while (CAT_TOWER_POS == SCRATCHER_POS);
                 }
             }
+        }
+        else {
+            printf("아무 것도 사지 않았습니다.\n");
         }
 
         Sleep(2500);                                                                        // 2.5초 대기
